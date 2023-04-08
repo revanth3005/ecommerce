@@ -15,17 +15,34 @@ import {
   Link,
   FormErrorMessage,
   FormHelperText,
+  AlertDialog,
+  useDisclosure,
+  AlertDialogOverlay,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase/firebaseConfig";
-
+import { FaGlasses } from "react-icons/fa";
+import MessageModal from "../../Modal/MessageModal";
+import axios from "axios";
+let successMsg = "";
+let successHead = "";
+let failureMsg = "";
+let failureHead = "";
 const Register = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [failureModal, setFailureModal] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -33,20 +50,46 @@ const Register = () => {
       email: "",
       password: "",
     },
-    onSubmit: async(values) => {
-     
+    onSubmit: async (values) => {
       try {
-        const register=await createUserWithEmailAndPassword(
+        const register = await createUserWithEmailAndPassword(
           auth,
           values.email,
-          values.password,
-          // values.firstName,
-          // values.lastName
-        )
+          values.password
+        );
         console.log(register);
         console.log(values);
+        successHead = "User Register Successful...";
+        successMsg =
+          "You have Registered Successfully, Click on Sign In to Log...";
+        setSuccessModal(true);
+        setTimeout(() => {
+          navigate("/sign-in");
+        }, [1000]);
       } catch (error) {
         console.log(error.message);
+        failureHead = "Registration Failed..";
+        failureMsg = error.message;
+        setFailureModal(true);
+      }
+      try {
+        const userResponse = await axios.post(
+          "https://ecommerce-d7a8d-default-rtdb.asia-southeast1.firebasedatabase.app/registeredUsers.json",
+          JSON.stringify({
+            user: formik.values,
+          }),
+          {
+            headers: {
+              "content-type": "application/json",
+            },
+          }
+        );
+        console.log(userResponse);
+        if (userResponse.statusText === "OK") {
+          console.log("ok");
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     validationSchema: yup.object({
@@ -59,20 +102,27 @@ const Register = () => {
       password: yup.string().required("Password required").min(10, "Too Small"),
     }),
   });
-
+  const getState = (state) => {
+    setFailureModal(state);
+    setSuccessModal(state);
+  };
   return (
     <Flex
       minH={"92vh"}
       align={"center"}
       justify={"center"}
-      bg={useColorModeValue("gray.50", "gray.800")}
+      bgGradient="linear(19deg, #3EECAC 0%, #EE74E1 100%,#3EECAC)"
     >
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
-          <Heading fontSize={"4xl"} textAlign={"center"}>
+          <Heading
+            color={"whiteAlpha.900"}
+            fontSize={"4xl"}
+            textAlign={"center"}
+          >
             Sign up
           </Heading>
-          <Text fontSize={"lg"} color={"gray.600"}>
+          <Text color={"whiteAlpha.900"} fontSize={"lg"}>
             to enjoy all of our cool features ✌️
           </Text>
         </Stack>
@@ -88,7 +138,7 @@ const Register = () => {
                 <Box>
                   <FormControl
                     id="firstName"
-                     isInvalid={formik.errors.firstName}
+                    isInvalid={formik.errors.firstName}
                   >
                     <FormLabel htmlFor="firstName">First Name</FormLabel>
                     <Input
@@ -187,6 +237,9 @@ const Register = () => {
                   _hover={{
                     bg: "blue.500",
                   }}
+                  _active={{
+                    transform: "translateY(2px)",
+                  }}
                 >
                   Sign up
                 </Button>
@@ -202,6 +255,20 @@ const Register = () => {
             </Stack>
           </Box>
         </form>
+        {successModal && (
+          <MessageModal
+            getState={getState}
+            message={successMsg}
+            header={successHead}
+          />
+        )}
+        {failureModal && (
+          <MessageModal
+            getState={getState}
+            message={failureMsg}
+            header={failureHead}
+          />
+        )}
       </Stack>
     </Flex>
   );

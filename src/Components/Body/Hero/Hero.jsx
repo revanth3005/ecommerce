@@ -1,8 +1,13 @@
 import React from "react";
 import image from "../../../assets/grp pic.jpg";
 import "./Hero.css";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  const onClickShopNow = () => {
+    navigate("/products");
+  };
   return (
     <div id="carouselExampleCaptions" className="carousel slide">
       <div className="carousel-indicators">
@@ -29,24 +34,48 @@ const Hero = () => {
       </div>
       <div className="carousel-inner">
         <div className="carousel-item active">
-          <img src={image} className="d-block w-100" alt="..." />
+          <img src={image} className="d-block w-100 img" alt="..." />
           <div className="carousel-caption d-none d-md-block">
-            <button className="btn btn-outline-primary">Shop Now</button>
+            <button
+              className="btn btn-outline-primary"
+              onClick={onClickShopNow}
+            >
+              Shop Now
+            </button>
             <p>Up to 55% off | pick from local shops Visit the store</p>
           </div>
         </div>
         <div className="carousel-item">
-          <img src={image} className="d-block w-100" alt="..." />
+          <img
+            src={"https://i.dummyjson.com/data/products/96/thumbnail.jpg"}
+            className="d-block w-100 img"
+            alt="..."
+          />
           <div className="carousel-caption d-none d-md-block">
-            <button className="btn btn-outline-primary">Shop Now</button>
-            <p>Up to 60% off | Select your wanted picks from local shops, Visit the store</p>
+            <button
+              className="btn btn-outline-primary"
+              onClick={onClickShopNow}
+            >
+              Shop Now
+            </button>
+            <p>
+              Up to 60% off | Select your wanted picks from local shops, Visit
+              the store
+            </p>
           </div>
         </div>
         <div className="carousel-item">
-          <img src={image} className="d-block w-100" alt="..." />
+          <img src={image} className="d-block w-100 img" alt="..." />
           <div className="carousel-caption d-none d-md-block">
-            <button className="btn btn-outline-primary">Shop Now</button>
-            <p>Up to 60% off | Home décor picks from local shops Visit the store</p>
+            <button
+              className="btn btn-outline-primary"
+              onClick={onClickShopNow}
+            >
+              Shop Now
+            </button>
+            <p>
+              Up to 60% off | Home décor picks from local shops Visit the store
+            </p>
           </div>
         </div>
       </div>

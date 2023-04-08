@@ -8,18 +8,30 @@ import PrivateRoute from "./PrivateRoutes/PrivateRoute";
 import Cart from "../Cart/Cart";
 import Products from "../Products/Products";
 import DetailedProduct from "../Products/DetailedProduct";
+import DetailProduct from "../Products/DetailProduct";
+import CheckoutForm from "../Checkout/CheckoutForm";
+import Contact from "../Help/Contact";
+import Order from "../Order/Order";
+import Wishlist from "../wishlist/Wishlist";
+import Pay from "../pay/Pay";
 const RoutePages = () => {
   return (
     <Routes>
       <Route element={<PrivateRoute />}>
-        <Route path="/home" element={<Home />} />
-        <Route path="/cart-items" element={<Cart />} />
+        <Route path="products/:id" element={<DetailProduct />} />
+        <Route path="/payment" element={<Pay />} />
+        <Route path="/orders" element={<Order />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/checkout-Form" element={<CheckoutForm />} />
       </Route>
+
       <Route path="/sign-up" element={<Register />} />
       <Route path="/products" element={<Products />} />
-      <Route path="/product/:id" element={<DetailedProduct />} />
       <Route path="/sign-in" element={<Login />} />
+      <Route path="/contact" element={<Contact />} />
       <Route path="/" element={<Hero />} />
+      <Route path="/cart-items" element={<Cart />} />
+      <Route path="*" element={<h1>Not found</h1>} />
     </Routes>
   );
 };

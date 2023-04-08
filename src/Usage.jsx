@@ -1,90 +1,52 @@
-import { Formik, Field } from "formik";
-import {
-  Box,
-  Button,
-  Checkbox,
-  Flex,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Input,
-  VStack
-} from "@chakra-ui/react";
-import { Route, Routes } from "react-router-dom";
-
-const Usage=()=> {
-  return (
-    <Flex bg="gray.100" align="center" justify="center" h="100vh">
-      <Box bg="white" p={6} rounded="md" w={64}>
-        <Formik
-          initialValues={{
-            email: "",
-            password: "",
-            rememberMe: false
-          }}
-          onSubmit={(values) => {
-            alert(JSON.stringify(values, null, 2));
-          }}
-        >
-          {({ handleSubmit, errors, touched }) => (
-            <form onSubmit={handleSubmit}>
-              <VStack spacing={4} align="flex-start">
-                <FormControl>
-                  <FormLabel htmlFor="email">Email Address</FormLabel>
-                  <Field
-                    as={Input}
-                    id="email"
-                    name="email"
-                    type="email"
-                    variant="filled"
-                  />
-                </FormControl>
-                <FormControl isInvalid={!!errors.password && touched.password}>
-                  <FormLabel htmlFor="password">Password</FormLabel>
-                  <Field
-                    as={Input}
-                    id="password"
-                    name="password"
-                    type="password"
-                    variant="filled"
-                    validate={(value) => {
-                      let error;
-
-                      if (value.length < 6) {
-                        error = "Password must contain at least 6 characters";
-                      }
-
-                      return error;
-                    }}
-                  />
-                  <FormErrorMessage>{errors.password}</FormErrorMessage>
-                </FormControl>
-                <Field
-                  as={Checkbox}
-                  id="rememberMe"
-                  name="rememberMe"
-                  colorScheme="purple"
-                >
-                  Remember me?
-                </Field>
-                <Button type="submit" colorScheme="purple" width="full">
-                  Login
-                </Button>
-              </VStack>
-            </form>
-          )}
-        </Formik>
-      </Box>
-    </Flex>
-  );
-}
-export default Usage
+  // const findProduct = cart.find((item) => item.id === product.id);
+    // if (findProduct) {
+    //   console.log(findProduct);
+    //   setCart(
+    //     cart.map((item) =>
+    //       item.id === product.id
+    //         ? { ...findProduct, quantity: findProduct.quantity + 1 }
+    //         : ""
+    //     )
+    //   );
+    // } else {
+    //   setCart([...cart, { ...product, quantity: 1 }]);
+    // }
+    const productExist = cart.find((item) => item.id === product.id);
+    if (productExist) {
+      setCart(
+        cart.map((item) =>
+          item.id === product.id
+            ? { ...productExist, quantity: productExist.quantity + 1 }
+            : item
+        )
+      );
+    } else {
+      setCart([...cart, { ...product, quantity: 1 }]);
+    }
 
 
-<Routes>
-      <Route path="/info">
-        <Route path=":id" element={<CharacterInfo />}>
-          <Route path="/info/:id/episodes" element={<Episodes />} />
-        </Route>
-      </Route>
-    </Routes>
+    { label: "All", icon: FaProductHunt, type: "All" },
+      { label: "Mobile", icon: RxMobile, type: "smartphones" },
+      { label: "Laptops", icon: BsLaptop, type: "laptops" },
+      { label: "Fragrances", icon: TbPerfume, type: "fragrances" },
+      { label: "Skincare", icon: MdHealthAndSafety, type: "skincare" },
+      { label: "Groceries", icon: BiStoreAlt, type: "groceries" },
+      { label: "Home Decoration", icon: FiHome, type: "home-decoration" },
+      { label: "Furniture", icon: FiHome, type: "furniture" },
+      { label: "Womens Dresses", icon: GiDress, type: "womens-dresses" },
+      { label: "Womens Shoes", icon: GiSonicShoes, type: "womens-shoes" },
+      { label: "Womens Watches", icon: GoWatch, type: "womens-watches" },
+      { label: "Womens Bags", icon: BsFillHandbagFill, type: "womens-bags" },
+      {
+        label: "Womens Jewellery",
+        icon: GiJewelCrown,
+        type: "womens-jewellery",
+      },
+      { label: "Mens Shirts", icon: RiShirtLine, type: "mens-shirts" },
+      { label: "Mens Shoes", icon: GiConverseShoe, type: "mens-shoes" },
+      { label: "Mens Watches", icon: GoWatch, type: "mens-watches" },
+      { label: "Sunglasses", icon: BsSunglasses, type: "sunglasses" },
+      { label: "Automotive", icon: BiChip, type: "automotive" },
+      { label: "Motorcycle", icon: RiEBike2Line, type: "motorcycle" },
+      { label: "Home Decor lights", icon: BsLightbulb, type: "lighting" },
+      { label: "H", icon: "FiSettings", type: "" },

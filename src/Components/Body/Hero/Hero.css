@@ -1,4 +1,4 @@
-img{
-    height:94vh;
-    object-fit:cover;
+.img{
+    height:94vh !important;
+    object-fit:cover !important;
 }

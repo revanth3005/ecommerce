@@ -1,0 +1,31 @@
+.cartPlace{
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.cartImageDiv{
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.cartButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction:column;
+    gap: 10px;
+}
+.cartImageDetails{
+    display:flex;
+    flex-direction: row;
+    gap: 10px;
+}
+.cartDetails{
+    display: flex;
+    flex-direction: column;
+}
+.cartTotal{
+    float: right;
+    font-size: 30px;
+    font-weight: 500;
+}

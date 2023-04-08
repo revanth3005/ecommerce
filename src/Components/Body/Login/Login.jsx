@@ -14,21 +14,63 @@ import {
   FormErrorMessage,
   InputGroup,
   InputRightElement,
+  useToast,
 } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { auth } from "../../../firebase/firebaseConfig";
+import { ContextProvider } from "../../../context/ContextAPI";
+import MessageModal from "../../Modal/MessageModal";
+
+let successMsg = "";
+let successHead = "";
+let failureMsg = "";
+let failureHead = "";
 const Login = () => {
+  const cxtData = useContext(ContextProvider);
   const [showPassword, setShowPassword] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [displayMsg, setDisplayMsg] = useState("");
+  const [failureModal, setFailureModal] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+  const navigate = useNavigate();
+  const toast = useToast();
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log(values);
+      try {
+        const login = await signInWithEmailAndPassword(
+          auth,
+          values.email,
+          values.password
+        );
+        console.log(login);
+        cxtData.setLogState(true);
+        successHead = "User Login Successful...";
+        successMsg = "You have Login Successfully... Enjoy your Shopping...";
+        setSuccessModal(true);
+        const name = values.email.split("@");
+        cxtData.setUserName({
+          name: name[0],
+          email: values.email,
+        });
+        setTimeout(() => {
+          navigate("/products");
+        }, [1000]);
+      } catch (error) {
+        console.log(error.message);
+        failureHead = "Login Failed..";
+        failureMsg = error.message;
+        setFailureModal(true);
+      }
     },
     validationSchema: yup.object({
       email: yup
@@ -41,20 +83,27 @@ const Login = () => {
         .required("Password required"),
     }),
   });
+  const getState = (state) => {
+    setFailureModal(state);
+    setSuccessModal(state);
+  };
   return (
     <Flex
       minH={"92vh"}
       align={"center"}
       justify={"center"}
-      bg={useColorModeValue("gray.50", "gray.800")}
+      bgGradient="linear(19deg, #EE74E1 0%, #3EECAC 100%,#EE74E1)"
     >
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
-          <Heading fontSize={"4xl"}>Sign in to your account</Heading>
-          <Text fontSize={"lg"} color={"gray.600"}>
+          <Heading color={"whiteAlpha.900"} fontSize={"4xl"}>
+            Sign in to your account
+          </Heading>
+          <Text color={"whiteAlpha.900"} fontSize={"lg"}>
             to enjoy all of our cool <Link color={"blue.400"}>features</Link> ✌️
           </Text>
         </Stack>
+        {/* we can keep form here=== */}
         <form autoComplete="off" onSubmit={formik.handleSubmit}>
           <Box
             rounded={"lg"}
@@ -63,7 +112,7 @@ const Login = () => {
             p={8}
           >
             <Stack spacing={4}>
-            <FormControl id="email" isInvalid={formik.errors.email}>
+              <FormControl id="email" isInvalid={formik.errors.email}>
                 <FormLabel>Email address</FormLabel>
                 <Input
                   id="email"
@@ -129,7 +178,6 @@ const Login = () => {
                 <Text align={"center"}>
                   New user?{" "}
                   <Link color={"blue.400"}>
-                    {" "}
                     <NavLink to={"/sign-up"}>Signup</NavLink>
                   </Link>
                 </Text>
@@ -137,6 +185,20 @@ const Login = () => {
             </Stack>
           </Box>
         </form>
+        {successModal && (
+          <MessageModal
+            getState={getState}
+            message={successMsg}
+            header={successHead}
+          />
+        )}
+        {failureModal && (
+          <MessageModal
+            getState={getState}
+            message={failureMsg}
+            header={failureHead}
+          />
+        )}
       </Stack>
     </Flex>
   );

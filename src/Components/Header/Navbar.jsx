@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { GrCart } from "react-icons/gr";
+import "./Navbar.css";
 import {
   Box,
   Flex,
@@ -8,7 +9,6 @@ import {
   Button,
   Stack,
   Collapse,
-  Link,
   Popover,
   PopoverTrigger,
   useColorModeValue,
@@ -21,25 +21,80 @@ import {
   HStack,
   MenuButton,
   Menu,
+  ModalOverlay,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  PopoverContent,
+  Icon,
 } from "@chakra-ui/react";
-import {
-  HamburgerIcon,
-  CloseIcon,
-} from "@chakra-ui/icons";
-import { NavLink } from "react-router-dom";
+import { HamburgerIcon, CloseIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { NavLink, useNavigate } from "react-router-dom";
 import { color, transform } from "framer-motion";
-import { FiBell, FiChevronDown } from "react-icons/fi";
+import { FiBell, FiChevronDown, FiHome } from "react-icons/fi";
+import { RxMobile } from "react-icons/rx";
+import {
+  BsLaptop,
+  BsLightbulb,
+  BsFillHandbagFill,
+  BsSunglasses,
+} from "react-icons/bs";
+import { TbPerfume } from "react-icons/tb";
+import { MdHealthAndSafety } from "react-icons/md";
+import { BiStoreAlt, BiChip } from "react-icons/bi";
+import {
+  GiDress,
+  GiConverseShoe,
+  GiSonicShoes,
+  GiJewelCrown,
+  GiSelfLove,
+} from "react-icons/gi";
+import { GoWatch } from "react-icons/go";
+import { RiShirtLine, RiEBike2Line } from "react-icons/ri";
 
 //logic imports
 import { ContextProvider } from "../../context/ContextAPI";
 import { useContext } from "react";
-
+import Login from "../Body/Login/Login";
+import { FaProductHunt } from "react-icons/fa";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase/firebaseConfig";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const { isOpen, onToggle } = useDisclosure();
-const cxtData=useContext(ContextProvider)
+  const cxtData = useContext(ContextProvider);
+  const onClickSignUp = () => {
+    navigate("/sign-up");
+  };
+  const onClickSignIn = () => {
+    navigate("/sign-in");
+  };
+  const onClickCart = () => {
+    navigate("/cart-items");
+  };
+  const onClickWishlist = () => {
+    navigate("/wishlist");
+  };
+  const OnClickOrders = () => {
+    navigate("/orders");
+  };
+  const onClickSignOut = async () => {
+    try {
+      const signingOut = await signOut(auth);
+      console.log(signingOut);
+      cxtData.setLogState(false);
+      navigate("/");
+      cxtData.setUserName("");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
-    <Box >
+    <Box>
       <Flex
         bg={useColorModeValue("black", "white")}
         color={useColorModeValue("gray.600", "white")}
@@ -73,8 +128,9 @@ const cxtData=useContext(ContextProvider)
             _hover={{
               color: "gray",
             }}
+            fontSize={20}
           >
-            <NavLink to={"/"}>Logo</NavLink>
+            NSR
           </Text>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
@@ -88,34 +144,58 @@ const cxtData=useContext(ContextProvider)
           direction={"row"}
           spacing={6}
         >
-          <Button
-            as={"a"}
-            fontSize={"sm"}
-            fontWeight={400}
-            variant={"link"}
-            _hover={{
-              cursor: "pointer",
-              color: "white",
-              transform: "translateY(2px)",
-            }}
-          >
-            <NavLink to={"/sign-in"}>Sign In</NavLink>
-          </Button>
-          <Button
-            as={"a"}
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"green.400"}
-            _hover={{
-              bg: "white.300",
-              cursor: "pointer",
-              transform: "translateY(2px)",
-            }}
-          >
-            <NavLink to={"/sign-up"}>Sign Up</NavLink>
-          </Button>
+          {!cxtData.logState && (
+            <>
+              <Button
+                as={"a"}
+                fontSize={"sm"}
+                fontWeight={400}
+                variant={"link"}
+                _hover={{
+                  cursor: "pointer",
+                  color: "white",
+                  transform: "translateY(2px)",
+                }}
+                onClick={onClickSignIn}
+              >
+                Sign In
+              </Button>
+              <Button
+                as={"a"}
+                display={{ base: "none", md: "inline-flex" }}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"green.400"}
+                _hover={{
+                  bg: "white.300",
+                  cursor: "pointer",
+                  transform: "translateY(2px)",
+                }}
+                onClick={onClickSignUp}
+              >
+                Sign Up
+              </Button>
+            </>
+          )}
+          {cxtData.logState && (
+            <>
+              <Button
+                as={"a"}
+                fontSize={"sm"}
+                fontWeight={400}
+                variant={"link"}
+                _hover={{
+                  cursor: "pointer",
+                  color: "white",
+                  transform: "translateY(2px)",
+                }}
+                onClick={OnClickOrders}
+              >
+                Orders
+              </Button>
+            </>
+          )}
           <Button
             as={"a"}
             fontSize={"sm"}
@@ -128,54 +208,74 @@ const cxtData=useContext(ContextProvider)
               bg: "green.400",
               transform: "translateY(2px)",
             }}
+            onClick={onClickCart}
           >
-            <NavLink to={"/cart-items"}>
-              <GrCart />
-            </NavLink>
+            <GrCart />
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+              {cxtData.cart.length ? cxtData.cart.length : 0}
+            </span>
           </Button>
+          {cxtData.logState && (
+            <>
+              <Button
+                as={"a"}
+                fontSize={"sm"}
+                fontWeight={400}
+                variant={"link"}
+                backgroundColor={"white"}
+                _hover={{
+                  cursor: "pointer",
+                  color: "white",
+                  bg: "green.400",
+                  transform: "translateY(2px)",
+                }}
+                onClick={onClickWishlist}
+              >
+                <GiSelfLove />{" "}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                  {cxtData.wishlist.length ? cxtData.wishlist.length : 0}
+                </span>
+              </Button>
+            </>
+          )}
+
           {/* profile start */}
-          {
-            cxtData.logState ?  <Flex alignItems={"center"}>
-            <Menu>
-              <MenuButton
-                py={2}
-                transition="all 0.3s"
-                _focus={{ boxShadow: "none" }}
-              >
-                <HStack>
-                  <Avatar
-                    size={"sm"}
-                    src={
-                      "https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                    }
-                  />
-                  {/* <VStack
-                  display={{ base: 'none', md: 'flex' }}
-                  alignItems="flex-start"
-                  spacing="1px"
-                  ml="2">
-                  <Text fontSize="sm">Justina Clark</Text>
-                </VStack> */}
-                  <Box display={{ base: "none", md: "flex" }}>
-                    <FiChevronDown />
-                  </Box>
-                </HStack>
-              </MenuButton>
-              <MenuList
-                //bg={useColorModeValue("white", "gray.900")}
-                //borderColor={useColorModeValue("gray.200", "gray.700")}
-              >
-                <Text fontSize="md" textAlign={'center'}>Justina Clark</Text>
-                <MenuItem>Profile</MenuItem>
-                <MenuItem>Settings</MenuItem>
-                <MenuItem>Billing</MenuItem>
-                <MenuDivider />
-                <MenuItem>Sign out</MenuItem>
-              </MenuList>
-            </Menu>
-          </Flex> : ''
-          }
-         
+          {cxtData.logState ? (
+            <Flex alignItems={"center"}>
+              <Menu>
+                <MenuButton
+                  py={2}
+                  transition="all 0.3s"
+                  _focus={{ boxShadow: "none" }}
+                >
+                  <HStack>
+                    <Avatar
+                      size={"sm"}
+                      src={
+                        "https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+                      }
+                    />
+                    <Box display={{ base: "none", md: "flex" }}>
+                      <FiChevronDown />
+                    </Box>
+                  </HStack>
+                </MenuButton>
+                <MenuList bg={"white"} borderColor={"gray.200"}>
+                  <Text fontSize="md" textAlign={"center"}>
+                    <strong>{cxtData.userName.name?.toUpperCase()}</strong>
+                  </Text>
+                  <MenuItem>Profile</MenuItem>
+                  <MenuItem>Settings</MenuItem>
+                  <MenuItem>Billing</MenuItem>
+                  <MenuDivider />
+                  <MenuItem onClick={onClickSignOut}>Sign out</MenuItem>
+                </MenuList>
+              </Menu>
+            </Flex>
+          ) : (
+            ""
+          )}
+
           {/* profile end */}
         </Stack>
       </Flex>
@@ -191,28 +291,33 @@ const DesktopNav = () => {
   const linkColor = useColorModeValue("white", "white");
   const linkHoverColor = useColorModeValue("gray", "red");
   const popoverContentBgColor = useColorModeValue("white", "gray.800");
-
+  const cxtData = useContext(ContextProvider);
   return (
     <Stack direction={"row"} spacing={4}>
       {NAV_ITEMS.map((navItem) => (
         <Box key={navItem.label}>
           <Popover trigger={"hover"} placement={"bottom-start"}>
             <PopoverTrigger>
-              <Link
+              <NavLink
+                to={navItem.path}
+                onClick={() =>
+                  navItem.path === "/products"
+                    ? cxtData.setProductTypes("All")
+                    : ""
+                }
                 p={2}
                 fontSize={"sm"}
                 fontWeight={500}
-                color={linkColor}
+                color={"white"}
                 _hover={{
                   textDecoration: "none",
                   color: linkHoverColor,
                 }}
               >
-                <NavLink to={navItem.path}>{navItem.label}</NavLink>
-              </Link>
+                {navItem.label}
+              </NavLink>
             </PopoverTrigger>
-
-            {/* {navItem.children && (
+            {navItem.children && (
               <PopoverContent
                 border={0}
                 boxShadow={"xl"}
@@ -220,57 +325,61 @@ const DesktopNav = () => {
                 p={4}
                 rounded={"xl"}
                 minW={"sm"}
+                w={520}
               >
-                <Stack>
+                <Stack h={500} w={500} display={"flex"} flexWrap={"wrap"}>
                   {navItem.children.map((child) => (
                     <DesktopSubNav key={child.label} {...child} />
                   ))}
                 </Stack>
               </PopoverContent>
-            )} */}
+            )}
           </Popover>
         </Box>
       ))}
     </Stack>
   );
 };
-
-// const DesktopSubNav = ({ label, subLabel }) => {
-//   return (
-//     <Link
-//       role={"group"}
-//       display={"block"}
-//       p={2}
-//       rounded={"md"}
-//       _hover={{ bg: useColorModeValue("pink.50", "gray.900") }}
-//     >
-//       <Stack direction={"row"} align={"center"}>
-//         <Box>
-//           <Text
-//             transition={"all .3s ease"}
-//             _groupHover={{ color: "pink.400" }}
-//             fontWeight={500}
-//           >
-//             {label}
-//           </Text>
-//           <Text fontSize={"sm"}>{subLabel}</Text>
-//         </Box>
-//         <Flex
-//           transition={"all .3s ease"}
-//           transform={"translateX(-10px)"}
-//           opacity={0}
-//           _groupHover={{ opacity: "100%", transform: "translateX(0)" }}
-//           justify={"flex-end"}
-//           align={"center"}
-//           flex={1}
-//         >
-//           <Icon color={"pink.400"} w={5} h={5} as={ChevronRightIcon} />
-//         </Flex>
-//       </Stack>
-//     </Link>
-//   );
-// };
-
+const DesktopSubNav = ({ label, type, icon }) => {
+  const cxtData = useContext(ContextProvider);
+  const onClickNavItemSub = () => {
+    cxtData.setProductTypes(type);
+    cxtData.setProductTypeRes([]);
+  };
+  return (
+    <NavLink
+      onClick={onClickNavItemSub}
+      to={"/products"}
+      role={"group"}
+      p={1}
+      rounded={"md"}
+      _hover={{ bg: "pink.50" }}
+    >
+      <Stack direction={"row"} align={"center"}>
+        <Box>
+          <Text
+            transition={"all .3s ease"}
+            _groupHover={{ color: "blue.400" }}
+            fontWeight={500}
+          >
+            {label}
+          </Text>
+        </Box>
+        <Flex
+          transition={"all .3s ease"}
+          transform={"translateX(-10px)"}
+          opacity={0}
+          _groupHover={{ opacity: "100%", transform: "translateX(0)" }}
+          justify={"flex-end"}
+          align={"center"}
+          flex={1}
+        >
+          <Icon color={"blue.400"} w={5} h={3} as={ChevronRightIcon} />
+        </Flex>
+      </Stack>
+    </NavLink>
+  );
+};
 const MobileNav = () => {
   return (
     <Stack
@@ -287,12 +396,11 @@ const MobileNav = () => {
 
 const MobileNavItem = ({ label, children, path }) => {
   const { isOpen, onToggle } = useDisclosure();
-
+  const cxtData = useContext(ContextProvider);
   return (
     <Stack spacing={4} onClick={children && onToggle}>
       <Flex
         py={2}
-        as={Link}
         justify={"space-between"}
         align={"center"}
         _hover={{
@@ -303,36 +411,16 @@ const MobileNavItem = ({ label, children, path }) => {
           fontWeight={600}
           color={useColorModeValue("gray.600", "gray.200")}
         >
-          <NavLink to={path}>{label}</NavLink>
+          <NavLink
+            to={path}
+            onClick={() =>
+              label === "Products" ? cxtData.setProductTypes("All") : ""
+            }
+          >
+            {label}
+          </NavLink>
         </Text>
-        {/* {children && (
-          <Icon
-            as={ChevronDownIcon}
-            transition={"all .25s ease-in-out"}
-            transform={isOpen ? "rotate(180deg)" : ""}
-            w={6}
-            h={6}
-          />
-        )} */}
       </Flex>
-
-      {/* <Collapse in={isOpen} animateOpacity style={{ marginTop: "0!important" }}>
-        <Stack
-          mt={2}
-          pl={4}
-          borderLeft={1}
-          borderStyle={"solid"}
-          borderColor={useColorModeValue("gray.200", "gray.700")}
-          align={"start"}
-        >
-          {children &&
-            children.map((child) => (
-              <Link key={child.label} py={2} >
-                {child.label}
-              </Link>
-            ))}
-        </Stack>
-      </Collapse> */}
     </Stack>
   );
 };
@@ -340,37 +428,45 @@ const MobileNavItem = ({ label, children, path }) => {
 const NAV_ITEMS = [
   {
     label: "Home",
-    path: "/home",
-    // children: [
-    //   {
-    //     label: "Explore Design Work",
-    //     subLabel: "Trending Design to inspire you",
-    //   },
-    //   {
-    //     label: "New & Noteworthy",
-    //     subLabel: "Up-and-coming Designers",
-    //   },
-    // ],
+    path: "/",
   },
   {
     label: "Products",
     path: "/products",
     children: [
+      { label: "All", icon: <FaProductHunt />, type: "All" },
+      { label: "Mobile", icon: <RxMobile />, type: "smartphones" },
+      { label: "Laptops", icon: <BsLaptop />, type: "laptops" },
+      { label: "Fragrances", icon: <TbPerfume />, type: "fragrances" },
+      { label: "Skincare", icon: <MdHealthAndSafety />, type: "skincare" },
+      { label: "Groceries", icon: <BiStoreAlt />, type: "groceries" },
+      { label: "Home Decoration", icon: <FiHome />, type: "home-decoration" },
+      { label: "Furniture", icon: <FiHome />, type: "furniture" },
+      { label: "Womens Dresses", icon: <GiDress />, type: "womens-dresses" },
+      { label: "Womens Shoes", icon: <GiSonicShoes />, type: "womens-shoes" },
+      { label: "Womens Watches", icon: <GoWatch />, type: "womens-watches" },
       {
-        label: "Mobile",
-        subLabel: "Find your dream design job",
+        label: "Womens Bags",
+        icon: <BsFillHandbagFill />,
+        type: "womens-bags",
       },
       {
-        label: "Laptop",
-        subLabel: "An exclusive list for contract work",
+        label: "Womens Jewellery",
+        icon: <GiJewelCrown />,
+        type: "womens-jewellery",
       },
+      { label: "Mens Shirts", icon: <RiShirtLine />, type: "mens-shirts" },
+      { label: "Mens Shoes", icon: <GiConverseShoe />, type: "mens-shoes" },
+      { label: "Mens Watches", icon: <GoWatch />, type: "mens-watches" },
+      { label: "Sunglasses", icon: <BsSunglasses />, type: "sunglasses" },
+      { label: "Automotive", icon: <BiChip />, type: "automotive" },
+      { label: "Motorcycle", icon: <RiEBike2Line />, type: "motorcycle" },
+      { label: "Home Decor lights", icon: <BsLightbulb />, type: "lighting" },
     ],
   },
   {
-    label: "About",
-  },
-  {
-    label: "",
+    label: "Help",
+    path: "/contact",
   },
 ];
 
