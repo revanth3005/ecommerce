@@ -1,13 +1,11 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "../Body/Home";
 import Hero from "../Body/Hero/Hero";
 import Register from "../Body/Register/Register";
 import Login from "../Body/Login/Login";
 import PrivateRoute from "./PrivateRoutes/PrivateRoute";
 import Cart from "../Cart/Cart";
 import Products from "../Products/Products";
-import DetailedProduct from "../Products/DetailedProduct";
 import DetailProduct from "../Products/DetailProduct";
 import CheckoutForm from "../Checkout/CheckoutForm";
 import Contact from "../Help/Contact";
@@ -18,13 +16,13 @@ const RoutePages = () => {
   return (
     <Routes>
       <Route element={<PrivateRoute />}>
-        <Route path="products/:id" element={<DetailProduct />} />
         <Route path="/payment" element={<Pay />} />
         <Route path="/orders" element={<Order />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/checkout-Form" element={<CheckoutForm />} />
       </Route>
 
+      <Route path="products/:id" element={<DetailProduct />} />
       <Route path="/sign-up" element={<Register />} />
       <Route path="/products" element={<Products />} />
       <Route path="/sign-in" element={<Login />} />

@@ -25,10 +25,12 @@ import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import { MdLocalShipping } from "react-icons/md";
 import { ContextProvider } from "../../context/ContextAPI";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Footer from "../Footer/Footer";
+import "./Detail.css";
 
 const DetailProduct = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [product, setProduct] = useState();
   const [load, setLoad] = useState(false);
@@ -57,12 +59,16 @@ const DetailProduct = () => {
   }, [id]);
 
   const addItem = (product) => {
-    cxtData.addToCart(product);
-  }; 
+    if (cxtData.logState) {
+      cxtData.addToCart(product);
+    } else {
+      navigate("/sign-in");
+    }
+  };
   return (
     <>
       {load ? (
-        <div className="container mt-3">
+        <div className="container">
           <div className="row">
             <div className="col-md-12 mt-4">
               <Grid
@@ -105,7 +111,7 @@ const DetailProduct = () => {
           </div>
         </div>
       ) : (
-        <Container marginTop={"-60px"} maxW={"7xl"}>
+        <Container marginTop={{lg:"-60px",sm:"25"}} maxW={"7xl"}>
           <SimpleGrid
             columns={{ base: 1, lg: 2 }}
             spacing={{ base: 8, md: 10 }}
@@ -315,7 +321,7 @@ const DetailProduct = () => {
           </SimpleGrid>
         </Container>
       )}
-      <Footer/>
+      <Footer />
     </>
   );
 };

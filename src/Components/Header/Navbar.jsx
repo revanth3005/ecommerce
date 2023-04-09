@@ -30,6 +30,7 @@ import {
   ModalFooter,
   PopoverContent,
   Icon,
+  Image,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -62,6 +63,7 @@ import Login from "../Body/Login/Login";
 import { FaProductHunt } from "react-icons/fa";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/firebaseConfig";
+import logoImage from "../../assets/profile-pic(1).png";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -93,6 +95,9 @@ const Navbar = () => {
       console.log(error.message);
     }
   };
+  const onClickLogo = () => {
+    navigate("/");
+  };
   return (
     <Box>
       <Flex
@@ -122,6 +127,10 @@ const Navbar = () => {
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
           <Text
+            cursor={"pointer"}
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"center"}
             textAlign={useBreakpointValue({ base: "center", md: "left" })}
             fontFamily={"heading"}
             color={useColorModeValue("white", "white")}
@@ -129,8 +138,10 @@ const Navbar = () => {
               color: "gray",
             }}
             fontSize={20}
+            onClick={onClickLogo}
           >
-            NSR
+            <Image h={10} src={logoImage} />
+            <span style={{ marginTop: "5px" }}>NSR</span>
           </Text>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
@@ -181,7 +192,7 @@ const Navbar = () => {
           {cxtData.logState && (
             <>
               <Button
-                as={"a"}
+                className="orderButton"
                 fontSize={"sm"}
                 fontWeight={400}
                 variant={"link"}
@@ -266,7 +277,7 @@ const Navbar = () => {
                   </Text>
                   <MenuItem>Profile</MenuItem>
                   <MenuItem>Settings</MenuItem>
-                  <MenuItem>Billing</MenuItem>
+                  <MenuItem onClick={OnClickOrders}>Orders</MenuItem>
                   <MenuDivider />
                   <MenuItem onClick={onClickSignOut}>Sign out</MenuItem>
                 </MenuList>
@@ -293,9 +304,14 @@ const DesktopNav = () => {
   const popoverContentBgColor = useColorModeValue("white", "gray.800");
   const cxtData = useContext(ContextProvider);
   return (
-    <Stack direction={"row"} spacing={4}>
+    <Stack direction={"row"} spacing={4} mt={{ lg: "2" }} color={"white"}>
       {NAV_ITEMS.map((navItem) => (
-        <Box key={navItem.label}>
+        <Box
+          key={navItem.label}
+          _hover={{
+            color: "gray",
+          }}
+        >
           <Popover trigger={"hover"} placement={"bottom-start"}>
             <PopoverTrigger>
               <NavLink
@@ -340,15 +356,15 @@ const DesktopNav = () => {
     </Stack>
   );
 };
-const DesktopSubNav = ({ label, type, icon }) => {
+const DesktopSubNav = ({ label, type }) => {
   const cxtData = useContext(ContextProvider);
-  const onClickNavItemSub = () => {
+  const onClickNavItemSub = (type) => {
     cxtData.setProductTypes(type);
     cxtData.setProductTypeRes([]);
   };
   return (
     <NavLink
-      onClick={onClickNavItemSub}
+      onClick={() => onClickNavItemSub(type)}
       to={"/products"}
       role={"group"}
       p={1}

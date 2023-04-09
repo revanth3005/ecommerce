@@ -1,9 +1,9 @@
 .contain {
   margin-top: 3px;
 }
-@media (width < 450px) {
+@media (width < 800px) {
   .contain {
-    margin-top: 0px;
+    margin-top: 0px !important;
   }
 }
 

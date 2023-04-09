@@ -2,6 +2,7 @@ import React from "react";
 import image from "../../../assets/grp pic.jpg";
 import "./Hero.css";
 import { useNavigate } from "react-router-dom";
+import imageLogo from '../../../assets/profile-pic.png'
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const Hero = () => {
       <div className="carousel-inner">
         <div className="carousel-item active">
           <img src={image} className="d-block w-100 img" alt="..." />
-          <div className="carousel-caption d-none d-md-block">
+          <div className="carousel-caption ">
             <button
               className="btn btn-outline-primary"
               onClick={onClickShopNow}
@@ -51,7 +52,7 @@ const Hero = () => {
             className="d-block w-100 img"
             alt="..."
           />
-          <div className="carousel-caption d-none d-md-block">
+          <div className="carousel-caption ">
             <button
               className="btn btn-outline-primary"
               onClick={onClickShopNow}
@@ -65,8 +66,8 @@ const Hero = () => {
           </div>
         </div>
         <div className="carousel-item">
-          <img src={image} className="d-block w-100 img" alt="..." />
-          <div className="carousel-caption d-none d-md-block">
+          <img src={imageLogo} className="d-block w-100 img" alt="..." />
+          <div className="carousel-caption">
             <button
               className="btn btn-outline-primary"
               onClick={onClickShopNow}

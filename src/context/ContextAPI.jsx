@@ -111,6 +111,7 @@ const ContextAPI = (props) => {
   useEffect(() => {
     let timer;
     const fetchProduct = async () => {
+      console.log(productTypes);
       if (productTypes === "All") {
         try {
           const productResponse = await axios.get(

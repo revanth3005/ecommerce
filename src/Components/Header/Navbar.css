@@ -3,3 +3,12 @@
     background-color: "white" !important;
     font-size: 30px;
   } */
+.orderButton {
+  display: flex !important;
+}
+
+@media (width < 450px) {
+  .orderButton {
+    display: none !important;
+  }
+}

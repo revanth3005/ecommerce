@@ -1,0 +1,10 @@
+.containImg{
+    margin-top: 30px !important;
+}
+
+
+@media (width < 800px) {
+    .containImg {
+      margin-top: 60px !important;
+    }
+  }

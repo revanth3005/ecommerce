@@ -110,7 +110,9 @@ const Products = ({ children }) => {
   if (cxtData.errors) {
     alert("No server response");
   }
-
+  const onSubmitForm = (event) => {
+    event.preventDefault();
+  };
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
       {/* SidebarContent*/}
@@ -125,7 +127,6 @@ const Products = ({ children }) => {
         overflow={"scroll"}
         pos="fixed"
         h="full"
-        // {...rest}
       >
         <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
           <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
@@ -266,7 +267,7 @@ const Products = ({ children }) => {
           icon={<FiMenu />}
         />
         <HStack spacing={{ base: "0", md: "6" }}>
-          <form autoComplete="off">
+          <form autoComplete="off" onSubmit={onSubmitForm}>
             <Input
               size="lg"
               variant="filled"

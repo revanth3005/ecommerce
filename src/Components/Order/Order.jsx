@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { ContextProvider } from "../../context/ContextAPI";
-import { Image, Link } from "@chakra-ui/react";
+import { Center, Heading, Image, Link } from "@chakra-ui/react";
 
 const Order = () => {
   const cxtData = useContext(ContextProvider);
@@ -12,6 +12,9 @@ const Order = () => {
     <div className="container">
       <div className="row">
         <div className="row-col-12">
+          <Center>
+            <Heading>Orders</Heading>
+          </Center>
           <div className="cart">
             <div className="items">
               {cxtData.orderedList.map((product) => {

@@ -100,11 +100,11 @@ const CheckoutForm = () => {
   return (
     <>
       {load ? (
-        <div className="container contain">
+        <div className="container">
           <div className="row">
             <div className="col-md-12 mt-4">
               <Grid
-                // mt={{sm:'30px'}}
+                mt={{ sm: "30px" }}
                 templateRows={{
                   sm: "repeat(1, 1fr)",
                   md: "repeat(1, 1fr)",
